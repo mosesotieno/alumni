@@ -23,10 +23,31 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-eyv&c1u9a*e998+o_a&7!9gc6kf8ds3kirpv3q9^35zmwgyuc@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+DEBUG = False
 
+# Allowed hosts - add your PythonAnywhere URL
+ALLOWED_HOSTS = ['mosotieno.pythonanywhere.com', 'localhost', '127.0.0.1']
+
+
+# Static files configuration
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Media files (if you want file uploads later)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Database - PythonAnywhere uses MySQL for free accounts
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mosotieno$alumni_db',
+        'USER': 'mosotieno',
+        'PASSWORD': 'Married_2019',  # You'll get this from PythonAnywhere
+        'HOST': 'mosotieno.mysql.pythonanywhere-services.com',
+    }
+}
 
 # Application definition
 
