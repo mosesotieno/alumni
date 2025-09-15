@@ -31,8 +31,8 @@ class ContributionAdmin(admin.ModelAdmin):
     list_display = ['alumnus', 'event', 'amount', 'notes', 'contribution_date']
     list_filter = ['event', 'alumnus']
     search_fields = ['alumnus__full_name', 'event__name', 'notes']
-    date_hierarchy = 'id'  # Shows date-based navigation
     
     def contribution_date(self, obj):
-        return obj.id  # This will show the order of contributions
-    contribution_date.short_description = 'Entry Date'
+        # This will show a simple sequential indicator instead of date
+        return f"Entry #{obj.id}"
+    contribution_date.short_description = 'Entry Number'
