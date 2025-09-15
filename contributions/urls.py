@@ -10,7 +10,8 @@ urlpatterns = [
     path('events/add/', views.EventCreateView.as_view(), name='event-add'),
     path('contributions/add/', views.ContributionCreateView.as_view(), name='contribution-add'),
     path('export/', views.export_data, name='export-data'),
-     path('export/excel/', views.export_contributions_excel, name='export-excel'),
-    path('export/pdf/', views.export_contributions_pdf, name='export-pdf'),
+    path('export/excel/', views.export_selection, name='export-excel'),
+    path('export/pdf/', views.export_pdf_selection, name='export-pdf'),
     path('export/event/<int:event_id>/excel/', views.export_event_excel, name='export-event-excel'),
+    path('export/event/<int:event_id>/pdf/', views.export_event_pdf, name='export-event-pdf'),
 ]

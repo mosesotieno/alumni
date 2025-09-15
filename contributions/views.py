@@ -21,6 +21,8 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.units import inch
 import datetime
+from .forms import ExportSelectionForm
+
 
 def index(request):
     """Dashboard view"""
@@ -322,4 +324,142 @@ def export_event_excel(request, event_id):
     with pd.ExcelWriter(response, engine='openpyxl') as writer:
         df.to_excel(writer, sheet_name=event.name[:30], index=False)
     
+    return response
+
+
+def export_selection(request):
+    """View to select export options"""
+    if request.method == 'POST':
+        form = ExportSelectionForm(request.POST)
+        if form.is_valid():
+            export_type = form.cleaned_data['export_type']
+            event = form.cleaned_data['event']
+            
+            if export_type == 'all':
+                return export_contributions_excel(request)
+            else:
+                if event:
+                    return export_event_excel(request, event.id)
+                else:
+                    form.add_error('event', 'Please select an event for specific export')
+    else:
+        form = ExportSelectionForm()
+    
+    return render(request, 'contributions/export_selection.html', {'form': form})
+
+def export_pdf_selection(request):
+    """View to select PDF export options"""
+    if request.method == 'POST':
+        form = ExportSelectionForm(request.POST)
+        if form.is_valid():
+            export_type = form.cleaned_data['export_type']
+            event = form.cleaned_data['event']
+            
+            if export_type == 'all':
+                return export_contributions_pdf(request)
+            else:
+                if event:
+                    return export_event_pdf(request, event.id)
+                else:
+                    form.add_error('event', 'Please select an event for specific export')
+    else:
+        form = ExportSelectionForm()
+    
+    return render(request, 'contributions/export_pdf_selection.html', {'form': form})
+
+
+def export_event_pdf(request, event_id):
+    """Export specific event contributions to PDF"""
+    event = get_object_or_404(Event, id=event_id)
+    contributions = Contribution.objects.filter(event=event).select_related('alumnus')
+    
+    # Create PDF response
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="chianda_event_{}_{}.pdf"'.format(
+        event.name.lower().replace(' ', '_'),
+        datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    )
+    
+    # Create PDF document
+    doc = SimpleDocTemplate(response, pagesize=A4)
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Title
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=16,
+        spaceAfter=30,
+        alignment=1  # center
+    )
+    title = Paragraph("Chianda High School - Event Contributions Report", title_style)
+    elements.append(title)
+    
+    # Event Details
+    event_details = [
+        ["Event:", event.name],
+        ["Date:", event.date.strftime('%Y-%m-%d') if event.date else 'Not specified'],
+        ["Total Contributions:", str(contributions.count())],
+        ["Total Amount:", "Ksh {:,.2f}".format(float(
+            contributions.aggregate(total=Sum('amount'))['total'] or 0
+        ))]
+    ]
+    
+    event_table = Table(event_details)
+    event_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#1a472a')),
+        ('TEXTCOLOR', (0, 0), (0, -1), colors.whitesmoke),
+        ('BACKGROUND', (1, 0), (1, -1), colors.HexColor('#f8f9fa')),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+    ]))
+    
+    elements.append(event_table)
+    elements.append(Spacer(1, 30))
+    
+    # Date
+    date_text = "Generated on: {}".format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M'))
+    date_para = Paragraph(date_text, styles['Normal'])
+    elements.append(date_para)
+    elements.append(Spacer(1, 20))
+    
+    # Contributions Table
+    details_data = [['Alumnus', 'Contact', 'Amount (Ksh)', 'Notes']]
+    for contrib in contributions:
+        details_data.append([
+            contrib.alumnus.full_name,
+            contrib.alumnus.contact or '',
+            '{:,.2f}'.format(float(contrib.amount)),
+            contrib.notes or ''
+        ])
+    
+    # Add total row
+    total_amount = contributions.aggregate(total=Sum('amount'))['total'] or 0
+    details_data.append([
+        'TOTAL',
+        '',
+        '{:,.2f}'.format(float(total_amount)),
+        ''
+    ])
+    
+    details_table = Table(details_data)
+    details_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1a472a')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('ALIGN', (2, 1), (2, -1), 'RIGHT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#d4af37')),
+        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+        ('GRID', (0, 0), (-1, -1), 1, colors.grey),
+        ('FONTSIZE', (0, 1), (-1, -2), 8),
+    ]))
+    
+    elements.append(details_table)
+    
+    # Build PDF
+    doc.build(elements)
     return response

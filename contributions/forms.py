@@ -30,3 +30,23 @@ class ContributionForm(forms.ModelForm):
             'amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'notes': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class ExportSelectionForm(forms.Form):
+    EXPORT_CHOICES = [
+        ('all', 'All Events'),
+        ('specific', 'Specific Event')
+    ]
+    
+    export_type = forms.ChoiceField(
+        choices=EXPORT_CHOICES,
+        widget=forms.RadioSelect,
+        initial='all'
+    )
+    
+    event = forms.ModelChoiceField(
+        queryset=Event.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        empty_label="Select an event (if specific)"
+    )
