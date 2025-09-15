@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Contributions List</h2>
+    <a href="{% url 'contribution-add' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Contribution
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Alumnus</th>
+                        <th>Event</th>
+                        <th>Amount</th>
+                        <th>Notes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contribution in contributions %}
+                    <tr>
+                        <td>{{ contribution.alumnus.full_name }}</td>
+                        <td>{{ contribution.event.name }}</td>
+                        <td>Ksh {{ contribution.amount }}</td>
+                        <td>{{ contribution.notes|default:"-" }}</td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-info">View</a>
+                            <a href="#" class="btn btn-sm btn-warning">Edit</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No contributions found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
