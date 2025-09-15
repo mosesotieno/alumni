@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>Export Contributions - PDF</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Export Type:</label>
+                        {{ form.export_type }}
+                    </div>
+                    
+                    <div class="mb-3" id="event-selector" style="display: none;">
+                        <label for="{{ form.event.id_for_label }}" class="form-label">Select Event:</label>
+                        {{ form.event }}
+                        {% if form.event.errors %}
+                        <div class="text-danger">{{ form.event.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-file-pdf"></i> Export PDF
+                        </button>
+                        <a href="{% url 'contribution-list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const exportTypeRadios = document.querySelectorAll('input[name="export_type"]');
+    const eventSelector = document.getElementById('event-selector');
+    
+    function toggleEventSelector() {
+        const selectedValue = document.querySelector('input[name="export_type"]:checked').value;
+        eventSelector.style.display = selectedValue === 'specific' ? 'block' : 'none';
+    }
+    
+    // Initial toggle
+    toggleEventSelector();
+    
+    // Add event listeners
+    exportTypeRadios.forEach(radio => {
+        radio.addEventListener('change', toggleEventSelector);
+    });
+});
+</script>
+{% endblock %}
