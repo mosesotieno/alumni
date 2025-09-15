@@ -17,6 +17,7 @@
                         <th>Event Name</th>
                         <th>Date</th>
                         <th>Total Contributions</th>
+                        <th>Total Amount</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -25,15 +26,19 @@
                     <tr>
                         <td>{{ event.name }}</td>
                         <td>{{ event.date|date:"M d, Y"|default:"-" }}</td>
-                        <td>Ksh {{ event.contributions.count }}</td>
+                        <td>{{ event.contributions.count }}</td>
+                        <td>Ksh {{ event.total_amount|default:0 }}</td>
                         <td>
+                            <a href="{% url 'export-event-excel' event.id %}" class="btn btn-sm btn-success">
+                                <i class="fas fa-download"></i> Export
+                            </a>
                             <a href="#" class="btn btn-sm btn-info">View</a>
                             <a href="#" class="btn btn-sm btn-warning">Edit</a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center">No events found.</td>
+                        <td colspan="5" class="text-center">No events found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
