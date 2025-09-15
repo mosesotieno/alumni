@@ -1,0 +1,81 @@
+/* Chianda High School Admin Theme */
+:root {
+    --chianda-primary: #1a472a;    /* Dark green - represents growth, community */
+    --chianda-secondary: #d4af37;  /* Gold - represents excellence, value */
+    --chianda-accent: #8b4513;     /* Brown - represents earth, stability */
+}
+
+/* Header styling */
+#header {
+    background: var(--chianda-primary) !important;
+    color: white !important;
+}
+
+#branding h1 {
+    color: white !important;
+    font-weight: bold;
+}
+
+/* Buttons */
+.button, input[type="submit"], input[type="button"] {
+    background: var(--chianda-primary) !important;
+    border: none !important;
+    border-radius: 4px !important;
+}
+
+.button:hover, input[type="submit"]:hover, input[type="button"]:hover {
+    background: var(--chianda-accent) !important;
+}
+
+/* Links */
+a:link, a:visited {
+    color: var(--chianda-primary) !important;
+}
+
+a:hover {
+    color: var(--chianda-accent) !important;
+}
+
+/* Module captions */
+.module h2, .module caption {
+    background: var(--chianda-secondary) !important;
+    color: #000 !important;
+    font-weight: bold;
+}
+
+/* Tables */
+thead th {
+    background: var(--chianda-primary) !important;
+    color: white !important;
+}
+
+/* Dashboard */
+.dashboard .module table th {
+    width: 100%;
+    background: var(--chianda-primary) !important;
+    color: white !important;
+}
+
+/* Login page specific */
+.login .form-row {
+    margin-bottom: 15px;
+}
+
+.login .submit-row {
+    padding: 15px 0;
+}
+
+/* Add Chianda logo to login */
+body.login {
+    background: linear-gradient(135deg, #1a472a 0%, #2d7046 100%);
+}
+
+.login #container {
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.login .form-row label {
+    font-weight: bold;
+    color: var(--chianda-primary);
+}
