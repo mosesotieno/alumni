@@ -1,21 +1,208 @@
 {% extends "admin/base.html" %}
-
 {% load static %}
 
-{% block title %}{{ title }} | Chianda High School Admin{% endblock %}
+{% block title %}{{ title }} | Chianda Admin{% endblock %}
 
 {% block branding %}
 <h1 id="site-name">
     <a href="{% url 'admin:index' %}">
-        <img src="{% static 'admin/img/logo.png' %}" height="40px" style="margin-right: 10px;">
-        Chianda High School Benevolent - Admin Portal
+        🎓 Chianda High School Benevolent - Admin Portal
     </a>
 </h1>
 {% endblock %}
 
 {% block extrastyle %}
 {{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/custom.css' %}">
+<style>
+    /* Chianda High School Admin Theme */
+    :root {
+        --chianda-primary: #1a472a;    /* Dark green */
+        --chianda-secondary: #d4af37;  /* Gold */
+        --chianda-accent: #8b4513;     /* Brown */
+        --chianda-light: #f8f9fa;      /* Light background */
+    }
+
+    /* ===== HEADER & BRANDING ===== */
+    #header {
+        background: var(--chianda-primary) !important;
+        color: white !important;
+        border-bottom: 3px solid var(--chianda-secondary) !important;
+    }
+
+    #branding h1, 
+    #branding h1 a:link, 
+    #branding h1 a:visited {
+        color: white !important;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    #branding h1 a:hover {
+        color: var(--chianda-secondary) !important;
+    }
+
+    /* ===== SIDEBAR & MODULES ===== */
+    #content-main .module,
+    .dashboard .module {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .module h2, 
+    .module caption,
+    .dashboard .module caption {
+        background: var(--chianda-secondary) !important;
+        color: #000 !important;
+        font-weight: bold;
+        padding: 10px 12px;
+        margin: 0;
+        border-bottom: 2px solid var(--chianda-accent);
+    }
+
+    /* ===== TABLES & LISTS ===== */
+    thead th {
+        background: var(--chianda-primary) !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .module table {
+        border: 1px solid #ddd;
+    }
+
+    .module table th {
+        background: #f8f9fa;
+        font-weight: 600;
+    }
+
+    /* ===== BUTTONS & LINKS ===== */
+    .button, 
+    input[type="submit"], 
+    input[type="button"],
+    .submit-row input {
+        background: var(--chianda-primary) !important;
+        border: none !important;
+        border-radius: 4px !important;
+        color: white !important;
+        font-weight: bold;
+        padding: 8px 16px;
+    }
+
+    .button:hover, 
+    input[type="submit"]:hover, 
+    input[type="button"]:hover,
+    .submit-row input:hover {
+        background: var(--chianda-accent) !important;
+        transform: translateY(-1px);
+    }
+
+    a:link, 
+    a:visited {
+        color: var(--chianda-primary) !important;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: var(--chianda-accent) !important;
+        text-decoration: underline;
+    }
+
+    /* ===== DASHBOARD SPECIFIC ===== */
+    .dashboard .module table th {
+        background: var(--chianda-primary) !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .dashboard .module table td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    /* ===== FORM ELEMENTS ===== */
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="url"],
+    input[type="number"],
+    textarea,
+    select {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 8px;
+        width: 100%;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus,
+    input[type="url"]:focus,
+    input[type="number"]:focus,
+    textarea:focus,
+    select:focus {
+        border-color: var(--chianda-primary);
+        box-shadow: 0 0 0 2px rgba(26, 71, 42, 0.2);
+    }
+
+    /* ===== LOGIN PAGE ===== */
+    body.login {
+        background: linear-gradient(135deg, var(--chianda-primary) 0%, #2d7046 100%);
+    }
+
+    .login #container {
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        border: 2px solid var(--chianda-secondary);
+    }
+
+    .login .form-row {
+        margin-bottom: 15px;
+    }
+
+    .login .submit-row {
+        padding: 15px 0;
+    }
+
+    .login .submit-row input {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+        #header {
+            padding: 10px;
+        }
+        
+        #branding h1 {
+            font-size: 16px;
+        }
+        
+        .module h2, .module caption {
+            font-size: 14px;
+        }
+    }
+
+    /* ===== VISUAL CONFIRMATION ===== */
+    body::after {
+        content: "✅ Chianda Theme Active";
+        display: block;
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: var(--chianda-primary);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 12px;
+        z-index: 10000;
+        opacity: 0.9;
+    }
+</style>
 {% endblock %}
 
-{% block nav-global %}{% endblock %}
+{% block nav-global %}
+<!-- Optional: Add global navigation if needed -->
+{% endblock %}
